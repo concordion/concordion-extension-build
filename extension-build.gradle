@@ -1,0 +1,66 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/groups/public"}
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
+        classpath 'com.github.townsfolk:gradle-release:1.2'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: release.ReleasePlugin
+apply plugin: nexus.NexusPlugin
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.concordion:concordion:latest.release'
+}
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+test {
+    systemProperties['concordion.output.dir'] = "$reporting.baseDir/spec"
+}
+
+createReleaseTag.dependsOn uploadArchives
+
+modifyPom {
+    project {
+        name project.name
+        description project.description
+        url "https://github.com/concordion/${project.name}"
+        packaging 'jar'
+        inceptionYear ext.inceptionYear
+
+        scm {
+            url "https://github.com/concordion/${project.name}.git"
+            connection "scm:git:git://github.com/concordion/${project.name}.git"
+            developerConnection "scm:git:git@github.com:concordion/${project.name}.git"
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.html'
+                distribution 'repo'
+            }
+        }
+
+        issueManagement{ 
+            system 'GitHub Issues'
+            url "https://github.com/concordion/${project.name}/issues"
+        }
+
+        developers ext.developers 
+    }
+}
