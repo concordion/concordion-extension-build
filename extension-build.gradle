@@ -28,6 +28,8 @@ compileJava {
     targetCompatibility = 1.6
 }
 
+group='org.concordion'
+
 test {
     systemProperties['concordion.output.dir'] = "$reporting.baseDir/spec"
 }
