@@ -8,12 +8,15 @@ buildscript {
     dependencies {
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
         classpath 'com.github.townsfolk:gradle-release:1.2'
+        classpath 'org.ajoberstar:gradle-git:0.10.1' 
     }
 }
 
 apply plugin: 'java'
 apply plugin: release.ReleasePlugin
 apply plugin: nexus.NexusPlugin
+apply plugin: org.ajoberstar.gradle.git.ghpages.GithubPagesPlugin
+
 
 repositories {
     mavenCentral()
@@ -66,3 +69,7 @@ modifyPom {
         developers ext.developers 
     }
 }
+
+task publishSnapshot(dependsOn: ['clean', 'test', 'uploadArchives'])
+
+task publishRelease(dependsOn: ['clean', 'publishGhPages', 'release'])
