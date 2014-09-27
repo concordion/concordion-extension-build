@@ -70,8 +70,11 @@ modifyPom {
     }
 }
 
-task publishDocs(dependsOn: ['clean', 'test', 'javadoc','publishGhPages'])
+publishGhPages.dependsOn test
+publishGhPages.dependsOn javadoc
 
-task publishSnapshot(dependsOn: ['clean', 'test', 'uploadArchives'])
+task publishDocs(dependsOn: ['publishGhPages'])
 
-task publishRelease(dependsOn: ['clean', 'publishDocs', 'release'])
+task publishSnapshot(dependsOn: ['test', 'uploadArchives'])
+
+task publishRelease(dependsOn: ['publishDocs', 'release'])
