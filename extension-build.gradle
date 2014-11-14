@@ -8,15 +8,19 @@ buildscript {
     dependencies {
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
         classpath 'com.github.townsfolk:gradle-release:1.2'
-        classpath 'org.ajoberstar:gradle-git:0.10.1' 
+        classpath 'org.ajoberstar:gradle-git:0.10.1'
     }
 }
 
 apply plugin: 'java'
+apply plugin: 'wrapper'
 apply plugin: release.ReleasePlugin
 apply plugin: nexus.NexusPlugin
 apply plugin: org.ajoberstar.gradle.git.ghpages.GithubPagesPlugin
 
+wrapper {
+    gradleVersion = "2.2"
+}
 
 repositories {
     mavenCentral()
@@ -61,12 +65,12 @@ modifyPom {
             }
         }
 
-        issueManagement{ 
+        issueManagement{
             system 'GitHub Issues'
             url "https://github.com/concordion/${project.name}/issues"
         }
 
-        developers ext.developers 
+        developers ext.developers
     }
 }
 
