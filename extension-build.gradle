@@ -14,7 +14,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'wrapper'
-apply plugin: release.ReleasePlugin
+apply plugin: 'net.researchgate.release'
 apply plugin: nexus.NexusPlugin
 apply plugin: org.ajoberstar.gradle.git.ghpages.GithubPagesPlugin
 
