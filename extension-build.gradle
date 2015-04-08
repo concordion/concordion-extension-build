@@ -12,12 +12,9 @@ buildscript {
     }
 }
 
-plugins {
-  id 'net.researchgate.release' version '2.0.2'
-}
-
 apply plugin: 'java'
 apply plugin: 'wrapper'
+apply plugin: release.ReleasePlugin
 apply plugin: nexus.NexusPlugin
 apply plugin: org.ajoberstar.gradle.git.ghpages.GithubPagesPlugin
 
