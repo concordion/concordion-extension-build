@@ -1,19 +1,19 @@
 concordion-extension-build
 ==========================
 
-Contains a common build file for publishing Concordion extensions.
+Contains a common build file for publishing Concordion extensions. This includes common properties, dependencies and plugins, publishing artifacts to Bintray and documentation to Github Pages.
 
-The common build file contains build logic to do a local Maven install, or publish to Maven Central as a snapshot or release.
+The common build file contains build logic to do a local Maven install, or publish a release to Bintray, JCenter and Maven Central.
 
 It also allows you to publish output to Github Pages.
 
 # Tasks
-It adds the following tasks (amongst others) to your build:
+It adds the following tasks (amongst others) to your build, that you can run using Gradle
 
- * `install` - builds the release and installs to your local Maven repository
- * `publishDocs` - builds the documentation and publishes to Github Pages
- * `publishRelease` - builds the release and publishes to the Sonatype OSS releases repository
- * `publishSnapshot` - builds the release and publishes to the Sonatype OSS snapshots repository
+ * `./gradlew install` - builds the release and installs to your local Maven repository
+ * `./gradlew publishDocs` - builds the documentation and publishes to Github Pages
+ * `./gradlew publishRelease` - builds the release and publishes to Bintray and to the JCenter and Maven Central repositories
+ * `./gradlew publishSnapshot` - builds the release and publishes to the Sonatype OSS snapshots repository
 
 # Configuration
 Example configuration is:
@@ -66,5 +66,23 @@ The `githubPages` block defines the repository to publish to, and has a pages Co
 # Publishing to Github Pages
 Prior to publishing to Github Pages for the first time, you will need to [create a gh-pages branch](https://help.github.com/articles/creating-project-pages-manually#create-a-gh-pages-branch), and [add content and push](https://help.github.com/articles/creating-project-pages-manually#add-content-and-push).
 
-# Publishing a snapshot or release to Sonatype OSS (for Maven Central)
-Only authorised administrators can publish to Sonatype OSS. Once authorised follow the instructions on [how to make a release](https://code.google.com/p/concordion/wiki/HowToMakeARelease).
+# Publishing a snapshot or release
+Only authorised committers can publish a release.
+
+In order to publish to Bintray, you must have a Bintray account linked to the Concordion organisation, and must the following properties defined in in your `~/.gradle/gradle.properties` file (where ~ is whatever your home folder is).
+ 
+ ```
+ bintrayUsername=<your username>
+ bintrayApiKey=<your api key>
+ bintrayPassphrase=<concordion passphrase>
+ sonatypeUsername=<concordion sonatype username>
+ sonatypePassword=<concordion sonatype password>
+ ``` 
+ 
+ with your bintray username and api key. The api key is shown if you edit your Bintray profile. 
+ 
+ The `bintrayPassphrase` is the passphrase for the GPG key that is set up for the Concordion organisation to sign the release. 
+ 
+ The `sonatypeUsername` and `sonatypePassword` are the credentials to publish to Maven Central.
+
+ The Concordion Project Lead will send the bintrayPassphrase, sonatypeUsername and sonatypePassword to contributors on request.
