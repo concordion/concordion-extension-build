@@ -149,7 +149,7 @@ bintray {
     publish = true
     pkg {
         repo = 'maven'
-//        userOrg = 'concordion'
+        userOrg = 'concordion'
         name = project.name
         desc = project.description
         licenses = ['Apache-2.0']
