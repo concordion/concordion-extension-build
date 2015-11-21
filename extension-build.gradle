@@ -71,7 +71,7 @@ publishGhPages.dependsOn javadoc
 
 task publishDocs(dependsOn: ['publishGhPages'])
 
-task publishSnapshot(dependsOn: ['test', 'publishMainPublicationToMavenRepository'])
+task publishSnapshot(dependsOn: ['test', 'publishMavenJavaPublicationToMavenRepository'])
 
 task publishRelease(dependsOn: ['publishDocs', 'release'])
 
