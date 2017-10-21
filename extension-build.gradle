@@ -44,7 +44,7 @@ ext {
 }
 
 wrapper {
-    gradleVersion = "2.12"
+    gradleVersion = "4.2.1"
 }
 
 repositories {
@@ -65,6 +65,10 @@ group='org.concordion'
 
 test {
     systemProperties['concordion.output.dir'] = "$reporting.baseDir/spec"
+    outputs.upToDateWhen { false } // force it to run even if test code hasn't changed
+    testLogging {
+        events "passed", "skipped", "failed", "standardError"
+    }
 }
 
 
