@@ -43,9 +43,9 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.3.2'
 }
 
-githubPages {
+gitPublish {
 	repoUri = 'git@github.com:concordion/concordion-excel-extension.git'
-	pages {
+	contents {
 	   from 'docs'
 
 		from ('build/reports/spec/spec/concordion/ext/excel') {
@@ -61,7 +61,7 @@ githubPages {
 
 The `dependencies` block is only required if you want to add dependencies over and above the concordion dependency.
 
-The `githubPages` block defines the repository to publish to, and has a pages CopySpec that defines the pages to be copied.
+The `gitPublish` block defines the repository to publish to, and has a pages CopySpec that defines the pages to be copied.
 
 # Publishing to Github Pages
 Prior to publishing to Github Pages for the first time, you will need to [create a gh-pages branch](https://help.github.com/articles/creating-project-pages-manually#create-a-gh-pages-branch), and [add content and push](https://help.github.com/articles/creating-project-pages-manually#add-content-and-push).
