@@ -9,6 +9,7 @@ buildscript {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath 'net.researchgate:gradle-release:2.6.0'
         classpath 'org.ajoberstar:gradle-git-publish:1.0.0'
+        classpath 'net.nemerosa:versioning:2.7.1'
     }
 }
 
@@ -18,6 +19,7 @@ apply plugin: 'maven-publish'
 apply plugin: net.researchgate.release.ReleasePlugin
 apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 apply plugin: org.ajoberstar.gradle.git.publish.GitPublishPlugin
+apply plugin: net.nemerosa.versioning.VersioningPlugin
 
 ext {
     githubUrl = "https://github.com/concordion/${project.name}"
@@ -63,6 +65,22 @@ compileJava {
 
 group='org.concordion'
 
+jar {
+    manifest {
+        attributes  'Specification-Title'   : project.name,
+                    'Implementation-Title'  : project.name,
+                    'Specification-Version' : version.substring(0, version.lastIndexOf(".")),
+                    'Implementation-Version': version,
+                    'Implementation-Vendor' : 'concordion.org',
+                    'Specification-Vendor'  : 'concordion.org',
+                    'Created-By'            : System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')',
+                    'Built-With'            : "gradle-${project.getGradle().getGradleVersion()}, groovy-${GroovySystem.getVersion()}",
+                    'Build-Time'            : String.format("%tFT%<tRZ", Calendar.getInstance(TimeZone.getTimeZone("Z"))),
+                    'Build-Revision'        : versioning.info.commit,
+                    'Build-OS'              : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+    }
+}
+
 test {
     systemProperties['concordion.output.dir'] = "$reporting.baseDir/spec"
     outputs.upToDateWhen { false } // force it to run even if test code hasn't changed
@@ -70,7 +88,6 @@ test {
         events "passed", "skipped", "failed", "standardError"
     }
 }
-
 
 createReleaseTag.dependsOn bintrayUpload
 
