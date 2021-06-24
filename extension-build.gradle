@@ -55,13 +55,13 @@ repositories {
 }
 
 dependencies {
-    compile 'org.concordion:concordion:3.1.1'
-    testCompile 'org.concordion:concordion:3.1.1:tests'
+    compile 'org.concordion:concordion:3.1.2'
+    testCompile 'org.concordion:concordion:3.1.2:tests'
 }
 
 compileJava {
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
+    sourceCompatibility = 8
+    targetCompatibility = 8
 }
 
 group='org.concordion'
