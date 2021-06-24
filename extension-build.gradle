@@ -45,18 +45,13 @@ ext {
     }
 }
 
-wrapper {
-    gradleVersion = "4.10.2"
-}
-
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
-    compile 'org.concordion:concordion:3.1.2'
-    testCompile 'org.concordion:concordion:3.1.2:tests'
+    implementation 'org.concordion:concordion:3.1.2'
+    testImplementation 'org.concordion:concordion:3.1.2:tests'
 }
 
 compileJava {
@@ -70,8 +65,8 @@ jar {
     manifest {
         attributes  'Specification-Title'   : project.name,
                     'Implementation-Title'  : project.name,
-                    'Specification-Version' : version.substring(0, version.lastIndexOf(".")),
-                    'Implementation-Version': version,
+                    'Specification-Version' : project.version.substring(0, project.version.lastIndexOf(".")),
+                    'Implementation-Version': project.version,
                     'Implementation-Vendor' : 'concordion.org',
                     'Specification-Vendor'  : 'concordion.org',
                     'Created-By'            : System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')',
