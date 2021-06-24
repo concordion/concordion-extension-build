@@ -1,25 +1,25 @@
 buildscript {
   repositories {
-        mavenCentral()
         maven {
             url 'https://plugins.gradle.org/m2/'
-        }        
+        }
    }
    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-        classpath 'net.researchgate:gradle-release:2.6.0'
-        classpath 'org.ajoberstar:gradle-git-publish:2.1.3'
-        classpath 'net.nemerosa:versioning:2.7.1'
+        classpath 'io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin:1.1.0'
+        classpath 'net.nemerosa.versioning:net.nemerosa.versioning.gradle.plugin:2.14.0'
+        classpath 'net.researchgate.release:net.researchgate.release.gradle.plugin:2.8.1'
+        classpath 'org.ajoberstar:gradle-git-publish:3.0.0'
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'wrapper'
+apply plugin: 'java-library'
 apply plugin: 'maven-publish'
-apply plugin: net.researchgate.release.ReleasePlugin
-apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
-apply plugin: org.ajoberstar.gradle.git.publish.GitPublishPlugin
+apply plugin: 'signing'
+apply plugin: 'wrapper'
+apply plugin: io.github.gradlenexus.publishplugin.NexusPublishPlugin
 apply plugin: net.nemerosa.versioning.VersioningPlugin
+apply plugin: net.researchgate.release.ReleasePlugin
+apply plugin: org.ajoberstar.gradle.git.publish.GitPublishPlugin
 
 ext {
     githubUrl = "https://github.com/concordion/${project.name}"
@@ -28,15 +28,6 @@ ext {
     gitRepoUri = "git@github.com:concordion/${project.name}.git"
     vcsConnection = "scm:git:git://github.com/concordion/${project.name}.git"
 
-    if (!project.hasProperty("bintrayUsername")) {
-        bintrayUsername = ''
-    }
-    if (!project.hasProperty("bintrayApiKey")) {
-        bintrayApiKey = ''
-    }
-    if (!project.hasProperty("bintrayPassphrase")) {
-        bintrayPassphrase = ''
-    }
     if (!project.hasProperty("sonatypeUsername")) {
         sonatypeUsername = ''
     }
@@ -47,6 +38,10 @@ ext {
 
 repositories {
     mavenCentral()
+}
+
+wrapper {
+    gradleVersion = "7.1"
 }
 
 dependencies {
@@ -85,26 +80,12 @@ test {
     }
 }
 
-createReleaseTag.dependsOn bintrayUpload
-
 gitPublishCopy.dependsOn test
 gitPublishCopy.dependsOn javadoc
 
 task publishDocs(dependsOn: ['gitPublishPush'])
 
-task publishSnapshot(dependsOn: ['test', 'publishMainPublicationToMavenRepository'])
-
-task publishRelease(dependsOn: ['sourcesJar', 'javadocJar', 'publishDocs', 'release'])
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
+task publishRelease(dependsOn: ['clean', 'build', 'publishDocs', 'release'])
 
 gitPublish {
     // where to publish to (repo must exist)
@@ -130,30 +111,8 @@ gitPublish {
 }
 
 publishing {
-    repositories {
-        maven {
-            if (project.version.endsWith('-SNAPSHOT')) {
-                url "http://oss.jfrog.org/artifactory/simple/oss-snapshot-local/"
-                credentials {
-                    username bintrayUsername
-                    password bintrayApiKey
-                }
-            }
-        }        
-    }
-}
-
-publishing {
     publications {
-        main(MavenPublication) {
-            artifact sourcesJar {
-                classifier "sources"
-            }
-
-            artifact javadocJar {
-                classifier "javadoc"
-            }
-
+        mavenJava(MavenPublication) {
             from components.java
 
             pom.withXml {
@@ -188,45 +147,12 @@ publishing {
                     developers developers
                 }
                 asNode().dependencies.'*'.findAll() {
-                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                    it.scope.text() == 'runtime' && project.configurations.implementation.allDependencies.find { dep ->
                         dep.name == it.artifactId.text()
                     }
                 }.each() {
                     it.scope*.value = 'compile'
                 }
-            }
-        }
-    }
-}
-
-bintray {
-    user = bintrayUsername   // set this in your ~/.gradle/gradle.properties file
-    key = bintrayApiKey         // set this in your ~/.gradle/gradle.properties file 
-    publications = ['main'] // see publications closure
-//    dryRun = true
-    publish = true
-    pkg {
-        repo = 'maven'
-        userOrg = 'concordion'
-        name = project.name
-        desc = project.description
-        licenses = ['Apache-2.0']
-        issueTrackerUrl = issuesUrl
-        vcsUrl = vcsUrl
-        websiteUrl = githubUrl
-        version  {
-            name = project.version
-            released = new Date()
-            vcsTag = project.version
-            gpg {
-                sign = true
-                passphrase = bintrayPassphrase // set this in your ~/.gradle/gradle.properties file 
-            }
-            mavenCentralSync {
-                sync = true
-                user = sonatypeUsername              // set this in your ~/.gradle/gradle.properties file 
-                password = sonatypePassword          // OSS user password// set this in your ~/.gradle/gradle.properties file 
-                close = '1'
             }
         }
     }
