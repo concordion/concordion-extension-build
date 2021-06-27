@@ -54,6 +54,11 @@ compileJava {
     targetCompatibility = 8
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 group='org.concordion'
 
 jar {
@@ -156,4 +161,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
