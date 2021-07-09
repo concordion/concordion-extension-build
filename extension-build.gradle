@@ -45,8 +45,8 @@ wrapper {
 }
 
 dependencies {
-    implementation 'org.concordion:concordion:3.1.2'
-    testImplementation 'org.concordion:concordion:3.1.2:tests'
+    implementation 'org.concordion:concordion:3.1.3'
+    testImplementation 'org.concordion:concordion:3.1.3:tests'
 }
 
 compileJava {
