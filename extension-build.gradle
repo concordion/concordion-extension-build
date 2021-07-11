@@ -163,6 +163,15 @@ publishing {
     }
 }
 
+nexusPublishing {
+    repositories {
+        sonatype {
+            username = sonatypeUsername
+            password = sonatypePassword
+        }
+    }
+}
+
 signing {
     sign publishing.publications.mavenJava
 }
